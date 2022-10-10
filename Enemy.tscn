@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Enemy.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/spider-2.png.png" type="Texture" id=2]
 [ext_resource path="res://Sprites/spider-1.png.png" type="Texture" id=3]
+[ext_resource path="res://themes/health_bar.tres" type="Theme" id=4]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -22,10 +23,26 @@ position = Vector2( 600, 360 )
 scale = Vector2( 6.78125, 6.78125 )
 frames = SubResource( 1 )
 animation = "spider"
-frame = 1
 playing = true
+
+[node name="ProgressBar" type="ProgressBar" parent="Area2D"]
+visible = false
+margin_left = 541.0
+margin_top = 265.0
+margin_right = 670.0
+margin_bottom = 281.0
+theme = ExtResource( 4 )
+max_value = 5.0
+value = 2.0
+percent_visible = false
 
 [node name="EnterTimer" type="Timer" parent="."]
 wait_time = 0.8
 one_shot = true
 autostart = true
+
+[node name="DeathTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="timeout" from="EnterTimer" to="." method="_on_EnterTimer_timeout"]
+[connection signal="timeout" from="DeathTimer" to="." method="_on_DeathTimer_timeout"]

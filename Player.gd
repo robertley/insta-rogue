@@ -17,9 +17,13 @@ var player_class = "Warrior"
 
 export var player_name = "Player"
 
+var walking_direction = "back"
+var current_pos_x
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_class_defaults()
+	current_pos_x = $Area2D.position.x
 	
 func _process(delta):
 	update_stats()
@@ -29,8 +33,6 @@ func _process(delta):
 
 func init_player(name):
 	player_name = name
-	print('init')
-	print(player_name)
 	$StatsCanvas/Name.text = player_name + ": level " + str(level)
 	
 	$StatsCanvas.show()
@@ -77,17 +79,29 @@ func set_wizart_defaults():
 	determination = 5
 	karma = 0
 	
-func walk():
+func walk_back():
+	walking_direction = "back"
+	$Area2D.set_player_walking()
+	$WalkingTimer.start()
+	
+func walk_forward():
+	walking_direction = "forward"
 	$Area2D.set_player_walking()
 	$WalkingTimer.start()
 
 
 func _on_WalkingTimer_timeout():
-	print('done walking')
+	current_pos_x = $Area2D.position.x
 	$WalkingTimer.stop()
 	$Area2D.set_player_idle()
 	
 func check_walk_position(delta):
 	var timer_length = $WalkingTimer.wait_time
-	$Area2D.position.x = (timer_length - $WalkingTimer.time_left) * 150 * -1
+	var x_mod = 1
+	if (walking_direction == "back"):
+		x_mod = -1
+	
+	var destination = 120 * x_mod
+	
+	$Area2D.position.x = current_pos_x + ((timer_length - $WalkingTimer.time_left) / timer_length * destination)
 	
